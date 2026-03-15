@@ -21,4 +21,4 @@ async def on_member_join(member):
     await channel.send(message)
 
 # Your token here (keep the quotes!)
-client.run("")
+client.run("MTI0MDIxNzUzOTE0NjAyNzA1OQ.GZZo3m.-_eKCSpLZo8HvJgynSzaQ1ILD657_TCIxoUKZs")
