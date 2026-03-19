@@ -17,8 +17,12 @@ async def on_member_join(member):
     print(message)
 
     # Optional: Send to your own channel (change the number if you want)
-    channel = client.get_channel(1479466687416762523)
+    channel_id = 1483149225134133429
+    channel = client.get_channel(1483149225134133429)
+    if channel is not None:
     await channel.send(message)
+else:
+print(f"DEBUG: Channel not found! Check ID: {channel_id}")
 
 # Your token here (keep the quotes!)
 import os
