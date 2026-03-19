@@ -16,13 +16,14 @@ async def on_member_join(member):
     message = f"[{member.guild.name}] {member} (ID: {member.id}) just joined!"
     print(message)
 
-    # Optional: Send to your own channel (change the number if you want)
-    channel_id = 1483149225134133429
-    channel = client.get_channel(1483149225134133429)
+    # Optional: Send to your own channel
+    channel_id = 1483149225134133429  # ← your real ID is correct here
+    channel = client.get_channel(channel_id)
+
     if channel is not None:
-    await channel.send(message)
-else:
-print(f"DEBUG: Channel not found! Check ID: {channel_id}")
+        await channel.send(message)
+    else:
+        print(f"DEBUG: Channel not found! Check ID: {channel_id} or bot permissions in server")
 
 # Your token here (keep the quotes!)
 import os
