@@ -15,7 +15,7 @@ last_event_time = datetime.now(timezone.utc)
 async def on_ready():
     print(f"✅ Logged in as {client.user} (ID: {client.user.id})")
     print("🚀 Bot ready - monitoring joins...")
-    logging.info(f"Connected at {datetime.now(timezone.utc)}")
+    logging.info(f"Connected: {datetime.now(timezone.utc)}")
 
 @client.event
 async def on_member_join(member):
@@ -38,11 +38,13 @@ class ProxyConnector(aiohttp.TCPConnector):
 
 async def health_check():
     while not client.is_closed():
-        await asyncio.sleep(300)
-        idle_time = (datetime.now(timezone.utc) - last_event_time).total_seconds()
-        if idle_time > 1800:
-            logging.warning(f"⚠️ Idle {idle_time/60:.0f}min - reconnecting")
-            await client.close()
+        try:
+            await asyncio.sleep(300)
+            idle = (datetime.now(timezone.utc) - last_event_time).total_seconds()
+            if idle > 1800:
+                logging.warning(f"⚠️ Idle {idle/60:.0f}min - reconnect")
+                await client.close()
+        except: pass
 
 async def run_bot():
     fails = 0
@@ -51,12 +53,15 @@ async def run_bot():
             print(f"🔄 Connecting (attempt {fails+1})")
             connector = ProxyConnector(PROXY_URL) if PROXY_URL else None
             if PROXY_URL: print(f"🌐 IPRoyal: {PROXY_URL[:40]}...")
-            await asyncio.gather(client.start(os.getenv("DISCORD_TOKEN"), bot=False, connector=connector), health_check())
+            await asyncio.gather(
+                client.start(os.getenv("DISCORD_TOKEN"), bot=False, connector=connector),
+                health_check()
+            )
         except Exception as e:
             fails += 1
             logging.error(f"💥 {type(e).__name__}: {e}")
             await asyncio.sleep(15 if fails < 5 else 300)
 
 if __name__ == "__main__":
-    print("🎯 IPRoyal Discord Join Monitor")
+    print("🎯 IPRoyal Discord Monitor")
     asyncio.run(run_bot())
