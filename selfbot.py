@@ -27,16 +27,16 @@ async def on_member_join(member):
     else:
         print(f"DEBUG: Channel not found! ID: {1483149225134133429}")
 
-# Aggressive health check: force reconnect after 10 minutes of no activity
+# Very aggressive health check: reconnect every 8 minutes of no activity
 async def health_check():
     while True:
         await asyncio.sleep(60)  # check every 60 seconds
         idle_time = (datetime.now(timezone.utc) - last_event_time).total_seconds()
-        if idle_time > 600:  # 10 minutes
-            print(f"[{datetime.now(timezone.utc)}] WARNING: No events for 10+ minutes. Forcing reconnect...")
-            await client.close()
+        if idle_time > 480:  # 8 minutes
+            print(f"[{datetime.now(timezone.utc)}] WARNING: No events for 8+ minutes. Forcing reconnect now...")
+            await client.close()  # force close to trigger full restart
 
-# Main loop with fast retry
+# Main run with fast retry
 async def run_bot():
     while True:
         try:
